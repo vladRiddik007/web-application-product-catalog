@@ -1,13 +1,12 @@
 import React from 'react'
 import { useHistory } from 'react-router-dom'
 import styled from 'styled-components'
+import { listProducts } from '../data'
 
-export const EditProduct = ({ match, data }) => {
-  console.log('match, data: ', match, data);
+export const EditProduct = (props) => {
   const history = useHistory()
-  const product = data.find((p) => p.id === +match.params.productId)
-  console.log('match.params.productId: ', match.params.productId);
-  console.log('product: ', product);
+  const { id } = props.location.state
+  const product = listProducts.find((p) => p.id === id)
   let productData
 
   if (product)

@@ -29,7 +29,6 @@ export const Products = ({ match }) => {
       status: 'Out of Stock',
     },
   ]
-  /* Create an array of `<li>` items for each product */
   const linkList = productsData.map((product) => {
     return (
       <li key={product.id}>
