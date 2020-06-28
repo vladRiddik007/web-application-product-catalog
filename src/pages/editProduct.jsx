@@ -1,41 +1,47 @@
 import React from 'react'
+import { connect } from 'react-redux'
 import { useHistory } from 'react-router-dom'
-import styled from 'styled-components'
-import { listProducts } from '../data'
+import Button from '@material-ui/core/Button'
+import Card from '@material-ui/core/Card'
+import { makeStyles } from '@material-ui/core/styles'
+import { CardStyle } from '../components/card'
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    maxWidth: 345,
+    margin: theme.spacing(1),
+  },
+  media: {
+    height: 140,
+  },
+}))
 
 export const EditProduct = (props) => {
+  const classes = useStyles()
   const history = useHistory()
   const { id } = props.location.state
-  const product = listProducts.find((p) => p.id === id)
+  const product = props.products.find((p) => p.id === id)
   let productData
 
   if (product)
     productData = (
-      <CardStyle key={product.id}>
-        <CardImgStyle src={product.photo} alt={product.name} />
-        <p>{product.name}</p>
-        <p>{product.describe}</p>
-        <p>{product.price}</p>
-      </CardStyle>
+      <Card className={classes.root} key={product.id}>
+        <CardStyle product={product} />
+      </Card>
     )
   else productData = <h2> Sorry. Product doesn't exist </h2>
   return (
     <div>
-      <h2>Product edit pages</h2>
       <div>{productData}</div>
-      <button type="button" onClick={() => history.goBack()}>
+      <Button variant="outlined" color="primary" onClick={() => history.goBack()}>
         Go back
-      </button>
+      </Button>
     </div>
   )
 }
 
-const CardStyle = styled.div`
-  border: 1px solid red;
-  width: calc(33% - 40px);
-  margin: 0 20px 40px;
-  overflow: hidden;
-`
-const CardImgStyle = styled.img`
-  height: 50px;
-`
+const mapStateToProps = (state) => ({
+  products: state.products,
+})
+
+export default connect(mapStateToProps, null)(EditProduct)

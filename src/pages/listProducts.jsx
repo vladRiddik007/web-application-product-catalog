@@ -1,32 +1,51 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { useHistory } from 'react-router-dom'
 import styled from 'styled-components'
-import * as actions from '../redux/actions'
+import Button from '@material-ui/core/Button'
+import DeleteIcon from '@material-ui/icons/Delete'
+import Card from '@material-ui/core/Card'
+import CardActions from '@material-ui/core/CardActions'
+import { makeStyles } from '@material-ui/core/styles'
+import { getProducts, deleteProduct } from '../redux/actions'
+import { CardStyle } from '../components/card'
 
-const ListProducts = ({ products, deleteProduct }) => {
+const useStyles = makeStyles((theme) => ({
+  root: {
+    maxWidth: 345,
+    margin: theme.spacing(1),
+  },
+}))
+
+const ListProducts = ({ products, getProducts, deleteProduct }) => {
+  const classes = useStyles()
   let history = useHistory()
+  useEffect(() => {
+    getProducts()
+  }, [getProducts])
 
   const renderListProducts = (prod) => {
     return prod.map((product, i) => (
-      <CardStyle key={product.id}>
-        <CardImgStyle src={product.photo} alt={product.name} title={product.name} />
-        <p>name: {product.name}</p>
-        <p>describe: {product.describe}</p>
-        <p>price: {product.price}</p>
-        <button onClick={() => deleteProduct(i)}>Del</button>
-        <button type="button" onClick={() => history.push(`edit-product`, { id: product.id })}>
-          Edit
-        </button>
-      </CardStyle>
+      <Card className={classes.root} key={product.id}>
+        <CardStyle product={product} />
+        <CardActions>
+          <Button
+            variant="contained"
+            color="secondary"
+            startIcon={<DeleteIcon />}
+            onClick={() => deleteProduct(i)}
+          >
+            Delete
+          </Button>
+          <Button variant="outlined" color="primary" onClick={() => history.push(`edit-product`, { id: product.id })}>
+            Edit
+          </Button>
+        </CardActions>
+      </Card>
     ))
   }
-  return (
-    <Catalogue>
-      {renderListProducts(products)}
-    </Catalogue>
-  )
+  return <Catalogue>{renderListProducts(products)}</Catalogue>
 }
 
 ListProducts.propTypes = {
@@ -38,19 +57,15 @@ const mapStateToProps = (state) => ({
   products: state.products,
 })
 
-export default connect(mapStateToProps, actions)(ListProducts)
+const mapDispatchToProps = {
+  getProducts,
+  deleteProduct,
+}
 
-const CardStyle = styled.div`
-  border: 1px solid red;
-  width: calc(33% - 40px);
-  margin: 20px;
-  overflow: hidden;
-`
+export default connect(mapStateToProps, mapDispatchToProps)(ListProducts)
+
 const Catalogue = styled.div`
   display: flex;
   position: relative;
   flex-wrap: wrap;
-`
-const CardImgStyle = styled.img`
-  height: 100px;
 `

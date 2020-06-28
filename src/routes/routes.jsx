@@ -1,8 +1,10 @@
 import React from 'react'
 import { Switch, Route } from 'react-router-dom'
 import { Path } from './routeConfig'
-import { Authorization, AddingProduct, EditProduct } from '../pages'
+import { Authorization,  } from '../pages'
 import ListProducts from '../pages/listProducts'
+import AddingProduct from '../pages/addingProduct'
+import EditProduct from '../pages/editProduct'
 
 export const Routes = () => (
   <Switch>
